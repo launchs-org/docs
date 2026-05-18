@@ -1,2 +1,5 @@
 # docs
-企画書とかを置いてる場所
+
+企画書とか操作方法とかを置いてる場所
+
+launchs-orgnの使用方法: [https://launchs-org.github.io/docs/usage/](https://launchs-org.github.io/docs/usage/)
