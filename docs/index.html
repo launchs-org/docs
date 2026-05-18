@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Launchs ドキュメント — 使い方ガイド</title>
+  <style>
+    /* ===== CSS Reset & Variables ===== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-primary: #1a73e8;
+      --color-primary-light: #e8f0fe;
+      --color-primary-dark: #1557b0;
+      --color-accent: #34a853;
+      --color-accent-light: #e6f4ea;
+      --color-danger: #ea4335;
+      --color-danger-light: #fce8e6;
+      --color-warning: #fbbc04;
+      --color-warning-light: #fef7e0;
+      --color-text: #202124;
+      --color-text-secondary: #5f6368;
+      --color-border: #e0e0e0;
+      --color-bg: #ffffff;
+      --color-bg-secondary: #f8f9fa;
+      --sidebar-width: 260px;
+      --header-height: 64px;
+      --transition: 0.2s ease;
+      --radius: 8px;
+      --radius-lg: 12px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--color-text);
+      background: var(--color-bg);
+    }
+
+    /* ===== Header ===== */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--header-height);
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      z-index: 100;
+      gap: 12px;
+    }
+
+    .site-header .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--color-text);
+    }
+
+    .site-header .logo-mark {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -1px;
+      flex-shrink: 0;
+    }
+
+    .site-header .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .site-header .header-badge {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== Layout ===== */
+    .layout {
+      display: flex;
+      padding-top: var(--header-height);
+      min-height: 100vh;
+    }
+
+    /* ===== Sidebar ===== */
+    .sidebar {
+      position: fixed;
+      top: var(--header-height);
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-width);
+      overflow-y: auto;
+      padding: 28px 0 40px;
+      border-right: 1px solid var(--color-border);
+      background: var(--color-bg-secondary);
+      z-index: 90;
+      transition: transform var(--transition);
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .sidebar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--color-border);
+      border-radius: 2px;
+    }
+
+    .sidebar-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--color-text-secondary);
+      padding: 0 20px 8px;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+    }
+
+    .sidebar-nav li a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      font-size: 13.5px;
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all var(--transition);
+      line-height: 1.4;
+    }
+
+    .sidebar-nav li a:hover {
+      color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+
+    .sidebar-nav li a.active {
+      color: var(--color-primary);
+      border-left-color: var(--color-primary);
+      background: var(--color-primary-light);
+      font-weight: 600;
+    }
+
+    .sidebar-nav li a .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      background: var(--color-border);
+      color: var(--color-text-secondary);
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: all var(--transition);
+    }
+
+    .sidebar-nav li a.active .step-num,
+    .sidebar-nav li a:hover .step-num {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    /* Hamburger (mobile) */
+    .hamburger {
+      display: none;
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 6px 10px;
+      cursor: pointer;
+      color: var(--color-text);
+      font-size: 18px;
+      margin-left: auto;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 89;
+    }
+
+    /* ===== Main Content ===== */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 60px 64px 100px;
+      max-width: 900px;
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      margin-bottom: 72px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--color-primary);
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -1px;
+      color: var(--color-text);
+      margin-bottom: 16px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 18px;
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+      max-width: 600px;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .hero-tag {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    /* ===== Section ===== */
+    .doc-section {
+      margin-bottom: 80px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .doc-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .step-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+      color: #fff;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 800;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(26,115,232,0.3);
+    }
+
+    .step-badge.overview {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+    }
+
+    .section-title-group h2 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.3;
+      color: var(--color-text);
+    }
+
+    .section-title-group .section-subtitle {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      margin-top: 2px;
+    }
+
+    .section-body {
+      padding-left: 60px;
+    }
+
+    .section-body p {
+      color: var(--color-text-secondary);
+      margin-bottom: 16px;
+      font-size: 15.5px;
+    }
+
+    .section-body p strong {
+      color: var(--color-text);
+    }
+
+    /* ===== Steps List ===== */
+    .steps-list {
+      list-style: none;
+      margin: 20px 0 24px;
+    }
+
+    .steps-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 15px;
+      color: var(--color-text-secondary);
+    }
+
+    .steps-list li:last-child {
+      border-bottom: none;
+    }
+
+    .steps-list li::before {
+      content: attr(data-n);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .steps-list li strong {
+      color: var(--color-text);
+    }
+
+    /* ===== Callouts ===== */
+    .callout {
+      display: flex;
+      gap: 12px;
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      margin: 20px 0;
+      font-size: 14.5px;
+      line-height: 1.6;
+    }
+
+    .callout-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+      line-height: 1.4;
+    }
+
+    .callout-body strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .callout.info {
+      background: var(--color-primary-light);
+      border-left: 4px solid var(--color-primary);
+      color: #1a5296;
+    }
+
+    .callout.success {
+      background: var(--color-accent-light);
+      border-left: 4px solid var(--color-accent);
+      color: #1e6633;
+    }
+
+    .callout.warning {
+      background: var(--color-warning-light);
+      border-left: 4px solid var(--color-warning);
+      color: #6b4f00;
+    }
+
+    .callout.danger {
+      background: var(--color-danger-light);
+      border-left: 4px solid var(--color-danger);
+      color: #9a1c1c;
+    }
+
+    /* ===== Code / Inline Code ===== */
+    code {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+      color: var(--color-danger);
+    }
+
+    /* ===== Image Card ===== */
+    .image-card {
+      margin: 28px 0;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-secondary);
+    }
+
+    .image-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--color-bg-secondary);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .image-card-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .image-card-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .image-card-dots span:nth-child(1) { background: #ff5f57; }
+    .image-card-dots span:nth-child(2) { background: #febc2e; }
+    .image-card-dots span:nth-child(3) { background: #28c840; }
+
+    .image-card-title {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      font-weight: 500;
+      margin-left: 4px;
+    }
+
+    .image-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      cursor: zoom-in;
+      transition: transform 0.2s ease;
+    }
+
+    .image-card img:hover {
+      transform: scale(1.01);
+    }
+
+    .image-card-caption {
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      background: var(--color-bg-secondary);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .image-card-caption::before {
+      content: "🔍";
+      font-size: 12px;
+    }
+
+    /* ===== Feature Grid ===== */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .feature-card {
+      padding: 20px;
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      transition: box-shadow var(--transition), border-color var(--transition);
+    }
+
+    .feature-card:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--color-primary);
+    }
+
+    .feature-card .fc-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .feature-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--color-text);
+    }
+
+    .feature-card p {
+      font-size: 13px !important;
+      margin: 0 !important;
+    }
+
+    /* ===== Divider ===== */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin: 0 0 80px;
+    }
+
+    /* ===== Lightbox ===== */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      cursor: zoom-out;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox-inner {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+    }
+
+    .lightbox-inner img {
+      display: block;
+      max-width: 100%;
+      max-height: 85vh;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      object-fit: contain;
+    }
+
+    .lightbox-caption {
+      color: rgba(255,255,255,0.75);
+      font-size: 13px;
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--transition);
+      line-height: 1;
+    }
+
+    .lightbox-close:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    /* ===== Back to Top ===== */
+    .back-to-top {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      width: 44px;
+      height: 44px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity var(--transition), transform var(--transition);
+      z-index: 80;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .back-to-top:hover {
+      background: var(--color-primary-dark);
+    }
+
+    /* ===== Footer ===== */
+    .site-footer {
+      margin-left: var(--sidebar-width);
+      padding: 32px 64px;
+      border-top: 1px solid var(--color-border);
+      background: var(--color-bg-secondary);
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 900px) {
+      .main-content {
+        padding: 40px 32px 80px;
+      }
+
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .section-body {
+        padding-left: 0;
+      }
+    }
+
+    @media (max-width: 720px) {
+      :root {
+        --sidebar-width: 0px;
+      }
+
+      .sidebar {
+        transform: translateX(-280px);
+        width: 280px;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-overlay.open {
+        display: block;
+      }
+
+      .hamburger {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 28px 20px 80px;
+      }
+
+      .site-footer {
+        margin-left: 0;
+        padding: 24px 20px;
+      }
+
+      .hero h1 {
+        font-size: 26px;
+      }
+
+      .hero-desc {
+        font-size: 15px;
+      }
+
+      .section-title-group h2 {
+        font-size: 20px;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .back-to-top {
+        bottom: 20px;
+        right: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<header class="site-header">
+  <a href="#top" class="logo">
+    <div class="logo-mark">L</div>
+    <span class="logo-text">Launchs</span>
+  </a>
+  <span class="header-badge">使い方ガイド</span>
+  <button class="hamburger" id="hamburgerBtn" aria-label="メニューを開く">&#9776;</button>
+</header>
+
+<!-- ===== Sidebar Overlay ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ===== Layout ===== -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar" aria-label="目次">
+    <div class="sidebar-label">目次</div>
+    <ul class="sidebar-nav" id="sidebarNav">
+      <li><a href="#overview" class="active"><span class="step-num">★</span>Launchs とは</a></li>
+      <li><a href="#create-project"><span class="step-num">1</span>プロジェクトを作成する</a></li>
+      <li><a href="#add-container"><span class="step-num">2</span>コンテナを追加する</a></li>
+      <li><a href="#build-progress"><span class="step-num">3</span>ビルドの進行を確認する</a></li>
+      <li><a href="#confirm-running"><span class="step-num">4</span>アプリの起動を確認する</a></li>
+      <li><a href="#publish"><span class="step-num">5</span>アプリを公開する</a></li>
+      <li><a href="#delete-container"><span class="step-num">6</span>コンテナを削除する</a></li>
+      <li><a href="#delete-project"><span class="step-num">7</span>プロジェクトを削除する</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main -->
+  <main class="main-content" id="top">
+
+    <!-- Hero -->
+    <div class="hero doc-section" id="hero-section">
+      <div class="hero-eyebrow">Getting Started</div>
+      <h1>はじめての <span>Launchs</span></h1>
+      <p class="hero-desc">
+        GitHub リポジトリからアプリをデプロイ・管理するサービス <strong>Launchs</strong> の使い方を、
+        スクリーンショット付きでステップごとに解説します。
+      </p>
+      <div class="hero-tags">
+        <span class="hero-tag">🚀 GitHub 連携</span>
+        <span class="hero-tag">📦 コンテナ管理</span>
+        <span class="hero-tag">🌐 インターネット公開</span>
+        <span class="hero-tag">📝 ビルドログ</span>
+      </div>
+    </div>
+
+    <!-- ===== Section 1: Overview ===== -->
+    <section class="doc-section" id="overview">
+      <div class="section-header">
+        <div class="step-badge overview">★</div>
+        <div class="section-title-group">
+          <h2>Launchs とは</h2>
+          <div class="section-subtitle">サービスの概要</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          <strong>Launchs</strong> は、GitHub リポジトリに push されたコードを数クリックで本番環境にデプロイできる
+          クラウドプラットフォームです。インフラの知識がなくても、アプリの起動・公開・管理がブラウザ上で完結します。
+        </p>
+        <p>
+          アプリは <strong>「プロジェクト」</strong> という単位で管理されます。プロジェクトの中に
+          <strong>「コンテナ」</strong> を追加すると、GitHub からコードが自動取得されてビルド・起動されます。
+          複数のコンテナを同じプロジェクトにまとめることで、フロントエンド・バックエンド・DB を一元管理できます。
+        </p>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="fc-icon">📁</div>
+            <h3>プロジェクト</h3>
+            <p>アプリをまとめる単位。複数コンテナをひとつのプロジェクトで管理。</p>
+          </div>
+          <div class="feature-card">
+            <div class="fc-icon">📦</div>
+            <h3>コンテナ</h3>
+            <p>GitHub リポジトリと紐づいたデプロイ単位。Railpackを用いて自動ビルド。</p>
+          </div>
+          <div class="feature-card">
+            <div class="fc-icon">🌐</div>
+            <h3>Ingress</h3>
+            <p>コンテナに外部 URL を発行。HTTPS で即座にアプリを公開できる。</p>
+          </div>
+          <div class="feature-card">
+            <div class="fc-icon">📋</div>
+            <h3>ビルドログ</h3>
+            <p>ビルド・実行のログをリアルタイムで確認。エラーの原因を素早く特定。</p>
+          </div>
+        </div>
+
+        <div class="callout info">
+          <span class="callout-icon">💡</span>
+          <div class="callout-body">
+            <strong>ポイント</strong>
+            Launchs はリポジトリ指定ディレクトリをrailpackを用いて自動ビルドします。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- ===== Section 2: Create Project ===== -->
+    <section class="doc-section" id="create-project">
+      <div class="section-header">
+        <div class="step-badge">1</div>
+        <div class="section-title-group">
+          <h2>プロジェクトを作成する</h2>
+          <div class="section-subtitle">アプリを管理するプロジェクトを用意します</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          Launchs にログイン後、最初は空のプロジェクト一覧が表示されます。
+          右上の <strong>「+ 新規プロジェクト」</strong> ボタンからプロジェクトを作成しましょう。
+        </p>
+
+        <ol class="steps-list">
+          <li data-n="1">画面右上の <strong>「+ 新規プロジェクト」</strong> ボタンをクリックする</li>
+          <li data-n="2">ダイアログが開いたら、<strong>プロジェクト名</strong> を入力する</li>
+          <li data-n="3"><strong>「プロジェクトを作成」</strong> ボタンをクリックして確定する</li>
+          <li data-n="4">一覧にカードが追加され、ステータスが <strong>「稼働中」</strong> になるのを確認する</li>
+          <li data-n="5">カードをクリックしてプロジェクト詳細に移動する</li>
+        </ol>
+
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-dots"><span></span><span></span><span></span></div>
+            <span class="image-card-title">プロジェクト一覧（空の状態）</span>
+          </div>
+          <img src="projects-empty.jpg" alt="プロジェクト一覧（空の状態）" loading="lazy" />
+          <div class="image-card-caption">まだプロジェクトがない初期状態。右上の「+ 新規プロジェクト」から開始します。</div>
+        </div>
+
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-dots"><span></span><span></span><span></span></div>
+            <span class="image-card-title">プロジェクト作成ダイアログ</span>
+          </div>
+          <img src="projects-create.jpg" alt="プロジェクト作成ダイアログ" loading="lazy" />
+          <div class="image-card-caption">プロジェクト名を入力して「プロジェクトを作成」をクリックします。</div>
+        </div>
+
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-dots"><span></span><span></span><span></span></div>
+            <span class="image-card-title">プロジェクト一覧（カードあり）</span>
+          </div>
+          <img src="projects-list.jpg" alt="プロジェクト一覧（カードあり）" loading="lazy" />
+          <div class="image-card-caption">「稼働中」バッジが表示されたらカードをクリックして詳細へ進みます。</div>
+        </div>
+
+        <div class="callout success">
+          <span class="callout-icon">✅</span>
+          <div class="callout-body">
+            <strong>完了の目安</strong>
+            カードに「稼働中」のバッジが表示されれば、プロジェクトの作成は完了です。
+            続けてコンテナを追加しましょう。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- ===== Section 3: Add Container ===== -->
+    <section class="doc-section" id="add-container">
+      <div class="section-header">
+        <div class="step-badge">2</div>
+        <div class="section-title-group">
+          <h2>コンテナを追加する（アプリをデプロイする）</h2>
+          <div class="section-subtitle">GitHub リポジトリを指定してデプロイを開始します</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          プロジェクト詳細画面でコンテナを追加します。コンテナとは、GitHub リポジトリと紐づいた
+          デプロイの単位です。<strong>GitHub URL・ブランチ・ディレクトリ</strong> を指定するだけで
+          自動的にビルドが始まります。
+        </p>
+
+        <ol class="steps-list">
+          <li data-n="1">プロジェクト詳細画面の <strong>「+ コンテナを追加」</strong> ボタンをクリックする</li>
+          <li data-n="2"><strong>コンテナ名</strong> を入力する（例：<code>go-sample-app</code>）</li>
+          <li data-n="3"><strong>GitHub リポジトリ URL</strong> を入力する（例：<code>https://github.com/launchs-org/sample-go-app</code>）</li>
+          <li data-n="4">デプロイしたい <strong>ブランチ名</strong> を入力する（例：<code>main</code>）</li>
+          <li data-n="5">Dockerfile がある <strong>ディレクトリ</strong> を指定する（ルートの場合は <code>.</code>）</li>
+          <li data-n="6"><strong>「デプロイを開始する」</strong> ボタンをクリックする</li>
+        </ol>
+
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-dots"><span></span><span></span><span></span></div>
+            <span class="image-card-title">プロジェクト詳細（コンテナなし）</span>
+          </div>
+          <img src="project-detail.jpg" alt="プロジェクト詳細（コンテナなし）" loading="lazy" />
+          <div class="image-card-caption">「+ コンテナを追加」ボタンからデプロイダイアログを開きます。</div>
+        </div>
+
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-dots"><span></span><span></span><span></span></div>
+            <span class="image-card-title">新規デプロイダイアログ</span>
+          </div>
+          <img src="new-container.jpg" alt="新規デプロイダイアログ" loading="lazy" />
+          <div class="image-card-caption">コンテナ名・GitHub URL・ブランチ・ディレクトリを入力して「デプロイを開始する」をクリック。</div>
+        </div>
+
+        <div class="callout warning">
+          <span class="callout-icon">⚠️</span>
+          <div class="callout-body">
+            <strong>注意</strong>
+            指定したブランチのルートまたはサブディレクトリに <code>Dockerfile</code> が存在しないとビルドに失敗します。
+            あらかじめリポジトリに Dockerfile をコミットしておいてください。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- ===== Section 4: Build Progress ===== -->
+    <section class="doc-section" id="build-progress">
+      <div class="section-header">
+        <div class="step-badge">3</div>
+        <div class="section-title-group">
+          <h2>ビルドの進行を確認する</h2>
+          <div class="section-subtitle">フロー図とビルドログでビルド状況を追跡します</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          「デプロイを開始する」をクリックすると、プロジェクト詳細のフロー図に新しいコンテナカードが出現し、
+          <strong>「ビルド中」</strong> バッジが表示されます。ビルドには数秒〜数分かかります。
+        </p>
+        <p>
+          サイドパネルの <strong>「ビルド」タブ</strong> を開くと、ビルドログがリアルタイムで流れてきます。
+          エラーが発生した場合はここで原因を確認できます。
+        </p>
+
+        <ol class="steps-list">
+          <li data-n="1">フロー図にコンテナカードが追加され <strong>「ビルド中」</strong> バッジが表示されるのを確認する</li>
+          <li data-n="2">コンテナカードをクリックして右サイドパネルを開く</li>
+          <li data-n="3"><strong>「ビルド」タブ</strong> を選択してビルドログを確認する</li>
+          <li data-n="4">ログの末尾に <code>ビルド成功</code> のような成功メッセージが出れば完了</li>
+        </ol>
+
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-dots"><span></span><span></span><span></span></div>
+            <span class="image-card-title">ビルド中の画面（フロー図 + ビルド中バッジ）</span>
+          </div>
+          <img src="container-building.jpg" alt="ビルド中の画面" loading="lazy" />
+          <div class="image-card-caption">フロー図にカードが出てビルド中バッジが表示されます。</div>
+        </div>
+
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-dots"><span></span><span></span><span></span></div>
+            <span class="image-card-title">ビルドログ画面</span>
+          </div>
+          <img src="container-buildlog.jpg" alt="ビルドログ画面" loading="lazy" />
+          <div class="image-card-caption">サイドパネルの「ビルド」タブでリアルタイムのビルドログを確認できます。</div>
+        </div>
+
+        <div class="callout danger">
+          <span class="callout-icon">🔴</span>
+          <div class="callout-body">
+            <strong>ビルドが失敗したら</strong>
+            ビルドログにエラーメッセージが表示されます。
+            「依存パッケージのインストール失敗」「ポート番号の記述漏れ」です。ログを参考にコードを修正して再デプロイしてください。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- ===== Section 5: Confirm Running ===== -->
+    <section class="doc-section" id="confirm-running">
+      <div class="section-header">
+        <div class="step-badge">4</div>
+        <div class="section-title-group">
+          <h2>アプリの起動を確認する</h2>
+          <div class="section-subtitle">「実行中」ステータスと実行ログで動作を確認します</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          ビルドが成功するとコンテナが自動的に起動し、フロー図のカードが <strong>「実行中」</strong> に変わります。
+          サイドパネルの <strong>「実行」タブ</strong> ではアプリのリアルタイムログを確認できます。
+        </p>
+
+        <ol class="steps-list">
+          <li data-n="1">フロー図のカードのバッジが <strong>「実行中」</strong> に変わるのを確認する</li>
+          <li data-n="2">サイドパネルで <strong>「実行」タブ</strong> を選択する</li>
+          <li data-n="3">アプリのログ出力が流れていることを確認する（例：<code>Listening on port 1323</code>）</li>
+        </ol>
+
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-dots"><span></span><span></span><span></span></div>
+            <span class="image-card-title">実行中の画面（実行タブ・ログ表示）</span>
+          </div>
+          <img src="container-running.jpg" alt="実行中の画面" loading="lazy" />
+          <div class="image-card-caption">カードが「実行中」になり、実行タブでアプリのログを確認できます。</div>
+        </div>
+
+        <div class="callout success">
+          <span class="callout-icon">🟢</span>
+          <div class="callout-body">
+            <strong>実行中になったら</strong>
+            アプリが正常に起動しています。次のステップでインターネットに公開する URL を取得しましょう。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- ===== Section 6: Publish ===== -->
+    <section class="doc-section" id="publish">
+      <div class="section-header">
+        <div class="step-badge">5</div>
+        <div class="section-title-group">
+          <h2>アプリをインターネットに公開する</h2>
+          <div class="section-subtitle">Ingress 設定で外部 URL を発行します</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          デフォルトではコンテナはサービスを用いた内部ネットワーク内のみでアクセス可能です。
+          <strong>「ネット」タブ</strong> の Ingress 設定を有効にすると、HTTPS の外部 URLが発行され、
+          インターネットからアクセスできるようになります。
+        </p>
+
+        <ol class="steps-list">
+          <li data-n="1">サイドパネルで <strong>「ネット」タブ</strong> を選択する</li>
+          <li data-n="2"><strong>内部ポート設定</strong> にアプリが LISTEN しているポート番号を入力する（例：<code>1323</code>）</li>
+          <li data-n="3"><strong>外部公開</strong> のトグルをオンにする</li>
+          <li data-n="4">数秒後に <strong>DEFAULT DOMAIN</strong> の URL が発行される</li>
+          <li data-n="5">発行された URL をブラウザで開き、アプリが表示されることを確認する</li>
+        </ol>
+
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-dots"><span></span><span></span><span></span></div>
+            <span class="image-card-title">ネットタブ（Ingress設定・DEFAULT DOMAIN発行済み）</span>
+          </div>
+          <img src="container-ingress.jpg" alt="ネットタブ（Ingress設定）" loading="lazy" />
+          <div class="image-card-caption">外部公開を有効にすると DEFAULT DOMAIN の URL が発行されます。</div>
+        </div>
+
+        <div class="callout info">
+          <span class="callout-icon">💡</span>
+          <div class="callout-body">
+            <strong>ポイント</strong>
+            発行された DEFAULT DOMAIN は <code>https://</code> の HTTPS 接続です。
+            独自ドメインを割り当てたい場合はカスタムドメイン設定を利用してください。
+          </div>
+        </div>
+
+        <div class="callout warning">
+          <span class="callout-icon">⚠️</span>
+          <div class="callout-body">
+            <strong>注意</strong>
+            アプリが指定したポートで LISTEN していない場合、URL を開いてもエラーになります。
+            実行ログで <code>Listening on port &lt;number&gt;</code> のようなメッセージを確認し、
+            内部ポート設定と一致しているか確かめてください。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- ===== Section 7: Delete Container ===== -->
+    <section class="doc-section" id="delete-container">
+      <div class="section-header">
+        <div class="step-badge">6</div>
+        <div class="section-title-group">
+          <h2>コンテナを削除する</h2>
+          <div class="section-subtitle">不要になったコンテナを安全に削除します</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          不要になったコンテナは <strong>「削除」タブ</strong> から削除できます。
+          誤削除を防ぐため、コンテナ名を入力しないと削除ボタンが有効になりません。
+        </p>
+
+        <ol class="steps-list">
+          <li data-n="1">削除したいコンテナカードをクリックしてサイドパネルを開く</li>
+          <li data-n="2"><strong>「削除」タブ</strong> を選択する</li>
+          <li data-n="3">確認欄に <strong>コンテナ名</strong> を正確に入力する</li>
+          <li data-n="4">削除ボタンが有効化されたら <strong>「削除する」</strong> をクリックする</li>
+        </ol>
+
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-dots"><span></span><span></span><span></span></div>
+            <span class="image-card-title">削除タブ</span>
+          </div>
+          <img src="container-delete.jpg" alt="削除タブ" loading="lazy" />
+          <div class="image-card-caption">コンテナ名を入力して削除ボタンが有効になったら削除を実行します。</div>
+        </div>
+
+        <div class="callout danger">
+          <span class="callout-icon">⛔</span>
+          <div class="callout-body">
+            <strong>注意：この操作は取り消せません</strong>
+            コンテナを削除すると、そのコンテナのビルドキャッシュ・実行ログ・Ingress 設定がすべて失われます。
+            データを別途バックアップしてから削除してください。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- ===== Section 8: Delete Project ===== -->
+    <section class="doc-section" id="delete-project">
+      <div class="section-header">
+        <div class="step-badge">7</div>
+        <div class="section-title-group">
+          <h2>プロジェクトを削除する</h2>
+          <div class="section-subtitle">不要になったプロジェクトをまとめて削除します</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <p>
+          プロジェクトが不要になった場合は、プロジェクト一覧から削除できます。
+          プロジェクトを削除するには、先に <strong>中のコンテナをすべて削除</strong> しておく必要があります。
+        </p>
+
+        <ol class="steps-list">
+          <li data-n="1">左メニューの <strong>「プロジェクト」</strong> をクリックしてプロジェクト一覧に移動する</li>
+          <li data-n="2">削除したいプロジェクトのカードに <strong>マウスを乗せる</strong></li>
+          <li data-n="3">右上に表示される <strong>「…」ボタン</strong> をクリックする</li>
+          <li data-n="4">メニューから <strong>「プロジェクトを削除」</strong> を選択する</li>
+          <li data-n="5">確認ダイアログが表示されるので <strong>「OK」</strong> をクリックして確定する</li>
+        </ol>
+
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-dots"><span></span><span></span><span></span></div>
+            <span class="image-card-title">プロジェクト削除メニュー</span>
+          </div>
+          <img src="project-delete.jpg" alt="プロジェクト削除メニュー" loading="lazy" />
+          <div class="image-card-caption">カードにマウスを乗せると「…」ボタンが現れ、「プロジェクトを削除」が選択できます。</div>
+        </div>
+
+        <div class="callout warning">
+          <span class="callout-icon">⚠️</span>
+          <div class="callout-body">
+            <strong>削除前にコンテナを削除してください</strong>
+            プロジェクト内にコンテナが残っている状態でも削除操作は可能ですが、中のコンテナや関連リソースもすべて一緒に削除されます。
+            大切なデータがある場合は事前にバックアップしてください。
+          </div>
+        </div>
+
+        <div class="callout danger">
+          <span class="callout-icon">⛔</span>
+          <div class="callout-body">
+            <strong>注意：この操作は取り消せません</strong>
+            プロジェクトを削除すると、プロジェクト内のすべてのコンテナ・ビルド履歴・ログ・設定が完全に削除されます。
+            復元する手段はありませんので、十分に確認してから実行してください。
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===== Footer ===== -->
+<footer class="site-footer">
+  <span>Launchs ドキュメント — 使い方ガイド</span>
+  <span>画像をクリックすると拡大表示されます</span>
+</footer>
+
+<!-- ===== Back to Top ===== -->
+<button class="back-to-top" id="backToTop" aria-label="トップに戻る">↑</button>
+
+<!-- ===== Lightbox ===== -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="画像拡大表示">
+  <button class="lightbox-close" id="lightboxClose" aria-label="閉じる">&times;</button>
+  <div class="lightbox-inner">
+    <img src="" alt="" id="lightboxImg" />
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+</div>
+
+<script>
+  /* ===== Lightbox ===== */
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCaption = document.getElementById('lightboxCaption');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  document.querySelectorAll('.image-card img').forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+      const caption = img.closest('.image-card').querySelector('.image-card-caption');
+      lightboxCaption.textContent = caption ? caption.textContent.trim() : '';
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  /* ===== Scroll Spy (Sidebar Highlight) ===== */
+  const sectionIds = ['overview', 'create-project', 'add-container', 'build-progress', 'confirm-running', 'publish', 'delete-container', 'delete-project'];
+  const navLinks = document.querySelectorAll('#sidebarNav a');
+
+  function updateActiveNav() {
+    let current = sectionIds[0];
+    sectionIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= 120) current = id;
+      }
+    });
+    navLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveNav, { passive: true });
+  updateActiveNav();
+
+  /* ===== Fade-in on Scroll ===== */
+  const sections = document.querySelectorAll('.doc-section');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+
+  sections.forEach(s => observer.observe(s));
+
+  /* ===== Back to Top ===== */
+  const backToTop = document.getElementById('backToTop');
+
+  window.addEventListener('scroll', () => {
+    backToTop.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+
+  backToTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ===== Mobile Sidebar ===== */
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    sidebarOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    sidebarOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  hamburgerBtn.addEventListener('click', () => {
+    sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+  });
+
+  sidebarOverlay.addEventListener('click', closeSidebar);
+
+  // Close sidebar when a nav link is clicked on mobile
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 720) closeSidebar();
+    });
+  });
+</script>
+</body>
+</html>
